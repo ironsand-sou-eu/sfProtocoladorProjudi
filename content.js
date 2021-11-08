@@ -254,13 +254,11 @@ class FileInjector {
         return result;        
     }
     
-    setFileToInput(file, fileInput) {
+    async setFileToInput(file, fileInput) {
         // const frameId;
 
-        chrome.runtime.sendMessage({criarDataTransfer: true}, response => {
-            console.log(response);
-        });
-
+        const resp = await chrome.runtime.sendMessage({criarDataTransfer: true});
+        console.log(resp);
 
 
 
@@ -270,7 +268,7 @@ class FileInjector {
     }
     
     adjustInput(fileInput) {
-        fileInput.setAttribute("width: 90px; display: none; position: absolute; top: -3000px;");
+        fileInput.setAttribute("style", "width: 90px; display: none; position: absolute; top: -3000px;");
     }
     
     insertWrapperElements(myFile, i) {

@@ -24,32 +24,17 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
-chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
   if(sender.tab.id == tabId || request.criarDataTransfer == true) {
     frameId = [sender.frameId];
-    let dtReturn = "";
-    chrome.scripting.executeScript({
+    let dtReturn = await chrome.scripting.executeScript({
       target: { tabId: tabId, frameIds: frameId },
       func: createDataTransfer
-    }, function(injResults) {
-      dtReturn = injResults[0].result;
-      console.log(dtReturn);
     });
-    do {
-      let i;
-      const waitReturn = setInterval (() => {
-        i++
-        console.log(i);
-        console.log(dtReturn);
-        if(dtReturn) {
-          clearInterval(waitReturn);
-        }
-      }, 300);
-    } while (!dtReturn);
-    console.log("oi, cheguei aqui");
     console.log(dtReturn);
-    sendResponse("respondi algo") //dtReturn);
+    sendResponse("respondi algo");
   }
+  return true; //dtReturn);
 });
 
 function createDataTransfer() {
