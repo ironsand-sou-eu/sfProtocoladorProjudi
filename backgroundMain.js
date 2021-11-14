@@ -17,6 +17,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
   });
 });
 
+// Listener para clique na action
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     tabId = tabs[0].id;
@@ -24,6 +25,7 @@ chrome.action.onClicked.addListener(() => {
   });
 });
 
+// Listener para eventual mensagem
 chrome.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
   if(sender.tab.id == tabId || request.criarDataTransfer == true) {
     // Mantaining this here only in case of a future need.
