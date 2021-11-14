@@ -221,8 +221,7 @@ class FileInjector {
     constructor(files, form) {
         this.files = files;
         this.form = form;
-        this.fileWrapperDiv = this.form.querySelector("#arquivoUpload_wrap");
-        this.fileListWrapperDiv = this.fileWrapperDiv.querySelector("#arquivoUpload_wrap_list");
+        this.fileListWrapperDiv = this.form.querySelector("#arquivoUpload_wrap_list");
     }
 
     injectFilesToProjudi() {
@@ -231,140 +230,61 @@ class FileInjector {
             if(!iFile.validFiletype) continue;
             const fileInput = this.getInput(i);
             this.setFileToInput(iFile, fileInput);
-            this.adjustInput(fileInput);
-            this.insertWrapperElements(iFile, i);
+            this.handleDescriptionBox(i, iFile);
+            i++;
         }
     }
 
     getInput(i) {
-        let result = null;
+        let qSelector = "";
         if(i===0) {
-            result = this.form.querySelector("#arquivoUpload");
+            qSelector = "#arquivoUpload";
         } else {
-            result = this.form.ownerDocument.createElement("input");
-            result.type="file";
-            result.id="arquivoUpload_F" + i;
-            result.name="arquivoUpload";
-            result.size="1";
-            result.setAttribute("style", "width: 90px; display: none;");
-            result.setAttribute("class", "MultiFile-applied MultiFile");
-            result.value="";
-            this.wrapperDiv.insertBefore(result, this.fileListWrapperDiv);
+            qSelector = "#arquivoUpload_F" + i;
         }
-        return result;        
+        return this.form.querySelector(qSelector);
     }
     
-    async setFileToInput(file, fileInput) {
-        // const frameId;
-
-        const resp = await chrome.runtime.sendMessage({criarDataTransfer: true});
-        console.log(resp);
-
-
-
-        
-
-        fileInput.files.add(file);
+    setFileToInput(file, fileInput) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+        const changeEvent = new Event("change");
+        fileInput.dispatchEvent(changeEvent);
     }
     
-    adjustInput(fileInput) {
-        fileInput.setAttribute("style", "width: 90px; display: none; position: absolute; top: -3000px;");
+    handleDescriptionBox (i, myFile) {
+        const qSelector = "#codDescricao" + (i + 1);
+        let descriptionBox = null;
+        let j = 0;
+        const selectWait = setInterval((qSelector, descriptionBox, myForm, j, myFile) => {
+            descriptionBox = myForm.querySelector(qSelector);
+            j++;
+            if (descriptionBox) {
+                this.changeOption(descriptionBox, myFile.projudiType)
+                if(myFile.projudiType == "Outros") {
+                    const txtDescriptQSelector = qSelector.replace("codD", "d");
+                    console.log(txtDescriptQSelector)
+                    const txtDescription = myForm.querySelector(txtDescriptQSelector);
+                    txtDescription.value = myFile.nameWithoutDiacritics;
+                }
+                clearInterval(selectWait);
+            } else if(j > 30) {
+                clearInterval(selectWait);
+            };
+        }, 200, qSelector, descriptionBox, this.form, j, myFile);
     }
-    
-    insertWrapperElements(myFile, i) {
-        const base1Ordinal = i + 1;
-        const mainDiv = this.form.ownerDocument.createElement("div");
-        mainDiv.setAttribute("class", "MultiFile-label");
 
-        const link1 = this.form.ownerDocument.createElement("a");
-        link1.setAttribute("class", "MultiFile-remove");
-        link1.href = "#arquivoUpload_wrap"
-        
-        const span = this.form.ownerDocument.createElement("span");
-        span.setAttribute("class", "MultiFile-title")
-        span.title = "Selecionado: C:\\fakepath\\" + myFile.name;
-        
-        const subDiv1 = this.form.ownerDocument.createElement("div");
-        subDiv1.setAttribute("style", "vertical-align:middle; height:15px; float:left; width:40%; margin-bottom:5px; border-bottom:1px dotted #ccc; padding-bottom:5px");
-        
-        const img1 = this.form.ownerDocument.createElement("img");
-        img1.name = "img";
-        img1.width = "15";
-        img1.border = "0";
-        img1.src = "/projudi/imagens/icon/pdf.jpg"
-        
-        const looseText = this.form.ownerDocument.createTextNode(file.nameWithoutDiacritics);
-        
-        const subDiv2 = this.form.ownerDocument.createElement("div");
-        subDiv2.setAttribute("style", "vertical-align:middle; height:15px; border-bottom:1px dotted #ccc; margin-bottom:5px; padding-bottom:5px; float:left; width:55%; text-align:center;");
-        
-        const select = this.form.ownerDocument.createElement("select");
-        select.name = "codDescricao";
-        select.id = "codDescricao" + base1Ordinal;
-        select.onchange = "tipo(this);";
-        select.setAttribute("aria-label", "Selecione o tipo de documento adicionado, em seguida tecle TAB para selecionar o certificado");
-        const options = {
-            0: {value: null, text: "Selecione o Tipo de Documento"},
-            1: {value: 1005, text: "Comprovante Residência"},
-            2: {value: 47, text: "Contestação"},
-            3: {value: 1, text: "Outros"},
-            4: {value: 40, text: "Petição"},
-            5: {value: 30, text: "Petição Inicial"},
-            6: {value: 32, text: "Procuração"},
-            7: {value: 41, text: "Substabelecimento"},
-            8: {value: 31, text: "Tomada de Termo"}
+    changeOption(selElement, optText) {
+        const selOptions = selElement.options;
+        for (let opt, j = 0; opt = selOptions[j]; j++) {
+            if (opt.innerText.trim() == optText) {
+                selElement.selectedIndex = j;
+                const changeEvent = new Event("change");
+                selElement.dispatchEvent(changeEvent);        
+                return true;
+            }
         }
-        for(let j = 0; j < 9; j++){
-            const opt = this.form.ownerDocument.createElement("option");
-            opt.value = options[j].value;
-            opt.text = options[j].text;
-            select.add(opt);
-        }
-        select.options.selectedIndex = 0;
-        
-        const inputDescricao = this.form.ownerDocument.createElement("input");
-        inputDescricao.setAttribute("style", "display:none; width:190px;");
-        inputDescricao.name = "descricao";
-        inputDescricao.onclick = "mascaraDescricao(this)";
-        inputDescricao.acao = "0";
-        inputDescricao.value = "Digite/informe aqui a Descrição";
-        inputDescricao.id = "descricao" + base1Ordinal;
-        inputDescricao.type = "text";
-        inputDescricao.maxlength = "210";
-        
-        const label = this.form.ownerDocument.createElement("label");
-        label.setAttribute("style", "display:none;");
-        label.name = "obrig";
-        label.id = "obrig" + base1Ordinal;
-        label.innerText = "*";
-        
-        const subDiv3 = this.form.ownerDocument.createElement("div");
-        subDiv3.setAttribute("style", "vertical-align:middle; height:15px; float:left; width:5%; margin-bottom:5px; border-bottom:1px dotted #ccc; padding-bottom:5px");
-        
-        const link2 = this.form.ownerDocument.createElement("a");
-        link2.setAttribute("style", "cursor: pointer");
-        link2.onclick = "$(this).parent().parent().prev().click()"
-        
-        const img2 = this.form.ownerDocument.createElement("img");
-        img2.setAttribute("style", "float: left");
-        img2.border = "0";
-        img2.setAttribute("aria-label", "Excluir documento");
-        img2.src = "/projudi/imagens/botoes/delete.png";
-        img2.alt = "Excluir";
-        
-        subDiv1.appendChild(img1);
-        subDiv1.appendChild(looseText);
-        subDiv2.appendChild(select);
-        subDiv2.appendChild(inputDescricao);
-        subDiv2.appendChild(label);
-        link2.appendChild(img2);
-        subDiv3.appendChild(link2);
-        span.appendChild(subDiv1);
-        span.appendChild(subDiv2);
-        span.appendChild(subDiv3);
-        mainDiv.appendChild(link1);
-        mainDiv.appendChild(span);
-
-        this.fileListWrapperDiv.appendChild(mainDiv);
+        return false;
     }
 }

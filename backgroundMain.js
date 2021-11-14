@@ -26,18 +26,7 @@ chrome.action.onClicked.addListener(() => {
 
 chrome.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
   if(sender.tab.id == tabId || request.criarDataTransfer == true) {
-    frameId = [sender.frameId];
-    let dtReturn = await chrome.scripting.executeScript({
-      target: { tabId: tabId, frameIds: frameId },
-      func: createDataTransfer
-    });
-    console.log(dtReturn);
-    sendResponse("respondi algo");
+    // Mantaining this here only in case of a future need.
   }
-  return true; //dtReturn);
+  return true;
 });
-
-function createDataTransfer() {
-  const dtTrans = new DataTransfer();
-  return dtTrans;
-}
