@@ -159,61 +159,7 @@ class FileParser {
      *  - console.log(stripDiacritics(myString)); // Shall return "Textao sem acentuacao"
      */
     stripDiacritics(str){
-        let result = "";
-        [...str].forEach(char => {
-            switch(char) {
-                case "á":
-                case "à":
-                case "ã":
-                case "â":
-                    char = "a";
-                    break;
-                case "Á":
-                case "À":
-                case "Ã":
-                case "Â":
-                    char = "A";
-                    break;
-                case "é":
-                case "ê":
-                    char = "e";
-                    break;
-                case "É":
-                case "Ê":
-                    char = "E";
-                    break;
-                case "í":
-                    char = "i";
-                    break;
-                case "Í":
-                    char = "I";
-                    break;
-                case "ó":
-                case "õ":
-                case "ô":
-                    char = "o";
-                    break;
-                case "Ó":
-                case "Õ":
-                case "Ô":
-                    char = "O";
-                    break;
-                case "ú":
-                    char = "u";
-                    break;
-                case "Ú":
-                    char = "U";
-                    break;
-                case "ç":
-                    char = "c";
-                    break;
-                case "Ç":
-                    char = "C";
-                    break;
-            }
-            result += char;
-        });
-        return result;
+        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     }
 }
 
