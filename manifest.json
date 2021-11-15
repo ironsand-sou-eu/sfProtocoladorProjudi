@@ -15,10 +15,12 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "declarativeContent"
+    "declarativeContent",
+    "webRequest",
+    "webNavigation"
   ],
 
-  "host_permissions": ["*://projudi.tjba.jus.br/*"],
+  "host_permissions": ["https://projudi.tjba.jus.br/*", "*://projudi.tjba.jus.br/*"],
 
   "background": {
     "service_worker": "backgroundMain.js"

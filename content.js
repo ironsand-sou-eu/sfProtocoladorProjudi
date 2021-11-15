@@ -1,33 +1,39 @@
-let tabId = "";
-let frameId = "";
-
 class StaticGlobalStarter {
     static {
-        chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
-            tabId = request.tabId;
-            if (request.clicou) StaticGlobalStarter.injectDragndropDiv();
-            sendResponse("Resposta irrelevante para evitar erro no console");
+        chrome.runtime.onMessage.addListener( (msg, sender, sendResponse) => {
+            if (msg.startInjection) StaticGlobalStarter.waitForContainers();
+            sendResponse("Dummy response to avoid console error logging");
         });
     }
-    
-    static injectDragndropDiv() {
-        var framePai = document.querySelector("[name=mainFrame]");
-        if(framePai) {
-            var iframePai = framePai.contentDocument.querySelector("#userMainFrame");
-        }
 
-        if(iframePai) {
-            var formPai = iframePai.contentDocument.querySelector("#formUpload");
-            var ssfDiv = iframePai.contentDocument.querySelector("[Sisifo]");
-        }
+    static waitForContainers() {
+        let j = 0;
+        let parentForm = null;
+        
+        var parentFormWait = setInterval((parentForm, j) => {
+            parentForm = document.querySelector("[name=mainFrame]")
+                ?.contentDocument.querySelector("#userMainFrame")
+                ?.contentDocument.querySelector("#formUpload");
+            j++;
+            if (parentForm) {
+                clearInterval(parentFormWait);
+                StaticGlobalStarter.injectDragndropDiv(parentForm);
+            } else if(j > 50) { // 50 iterations = 10 seconds
+                clearInterval(parentFormWait);
+            };
+        }, 200, parentForm, j);
+    }
+
+    static injectDragndropDiv(parentForm) {
+        var proproDiv = parentForm.parentNode.querySelector("[Propro]");
     
-        if(formPai && !ssfDiv) {
+        if(parentForm && !proproDiv) {
             const DropDiv = document.createElement("div");
-            DropDiv.toggleAttribute("Sisifo");
+            DropDiv.toggleAttribute("Propro");
             DropDiv.innerText = "Arraste os arquivos para cá";
             DropDiv.setAttribute("class", "sfDropDiv");
             DropDiv.setAttribute("style", this.montarCss());
-            formPai.parentNode.insertBefore(DropDiv, formPai);
+            parentForm.parentNode.insertBefore(DropDiv, parentForm);
     
             DropDiv.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -45,7 +51,7 @@ class StaticGlobalStarter {
                 const fParser = new FileParser(draggedFiles);
                 const finalFiles = fParser.parsedFiles;
                 if(finalFiles.length > 0) {
-                    const fInjector = new FileInjector(finalFiles, formPai);
+                    const fInjector = new FileInjector(finalFiles, parentForm);
                     fInjector.injectFilesToProjudi();
                 } else {
                     alert("Nenhum arquivo válido selecionado.");
@@ -203,7 +209,7 @@ class FileInjector {
         const qSelector = "#codDescricao" + (i + 1);
         let descriptionBox = null;
         let j = 0;
-        const selectWait = setInterval((qSelector, descriptionBox, myForm, j, myFile) => {
+        var selectWait = setInterval((qSelector, descriptionBox, myForm, j, myFile) => {
             descriptionBox = myForm.querySelector(qSelector);
             j++;
             if (descriptionBox) {

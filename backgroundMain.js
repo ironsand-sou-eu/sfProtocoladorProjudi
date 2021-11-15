@@ -1,6 +1,3 @@
-var tabId = "";
-var frameId = "";
-
 // Regra para exibir botão
 var regra1 = {
   conditions: [
@@ -20,15 +17,26 @@ chrome.runtime.onInstalled.addListener(function(details) {
 // Listener para clique na action
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    tabId = tabs[0].id;
-    chrome.tabs.sendMessage(tabId, {clicou: true, tabId: tabId}, () => {});
+    const details = { tabId: tabs[0].id };
+    sendMessage(details);
   });
 });
 
-// Listener para eventual mensagem
-chrome.runtime.onMessage.addListener( async (request, sender, sendResponse) => {
-  if(sender.tab.id == tabId || request.criarDataTransfer == true) {
-    // Mantaining this here only in case of a future need.
-  }
-  return true;
-});
+// Listener para navegação
+chrome.webRequest.onCompleted.addListener(
+  sendMessage,
+  {urls: ["*://projudi.tjba.jus.br/projudi/movimentacao/Peticionar*"]}
+);
+
+function sendMessage(details) {
+  chrome.tabs.sendMessage(
+    details.tabId,
+    {
+      startInjection: true,
+      fromCache: details.fromCache ?? null,
+      tabId: details.tabId ?? null,
+      frameId: details.frameId ?? null,
+      httpStatus: details.statusCode ?? null
+    }
+  );
+};
