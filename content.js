@@ -17,23 +17,37 @@ class StaticGlobalStarter {
             j++;
             if (parentForm) {
                 clearInterval(parentFormWait);
-                StaticGlobalStarter.injectDragndropDiv(parentForm);
+                const parentDoc = document.querySelector("[name=mainFrame]")
+                    .contentDocument.querySelector("#userMainFrame").contentDocument;
+                StaticGlobalStarter.injectDragndropDiv(parentForm, parentDoc);
             } else if(j > 50) { // 50 iterations = 10 seconds
                 clearInterval(parentFormWait);
             };
         }, 200, parentForm, j);
     }
 
-    static injectDragndropDiv(parentForm) {
-        var proproDiv = parentForm.parentNode.querySelector("[Propro]");
+    static injectDragndropDiv(parentForm, parentDoc) {
+        let proproDiv = parentDoc.querySelector("[Propro]");
     
         if(parentForm && !proproDiv) {
+            const sfCss = document.createElement("style");
+            sfCss.innerHTML = this.montarCss();
+            parentDoc.head.appendChild(sfCss);
+
             const DropDiv = document.createElement("div");
             DropDiv.toggleAttribute("Propro");
-            DropDiv.innerText = "Arraste os arquivos para cá";
             DropDiv.setAttribute("class", "sfDropDiv");
-            DropDiv.setAttribute("style", this.montarCss());
             parentForm.parentNode.insertBefore(DropDiv, parentForm);
+            
+            const mainText = document.createElement("div");
+            mainText.innerText = "Arraste os arquivos para cá";
+            DropDiv.appendChild(mainText);
+            
+            const textSubDiv = document.createElement("div");
+            textSubDiv.setAttribute("class", "sfSubTextDiv");
+            textSubDiv.innerHTML = "Evitemos excesso de anexos: o essencial pode passar despercebido<br />" +
+            "Sejamos éticos e responsáveis: falar a verdade é o primeiro passo para uma sociedade sadia";
+            DropDiv.appendChild(textSubDiv);
     
             DropDiv.addEventListener('dragover', (e) => {
                 e.preventDefault();
@@ -60,22 +74,44 @@ class StaticGlobalStarter {
         }
     }
 
-    static montarCss(){
-        let conteudo = "background-color: #0002; ";
-        conteudo += "border-style: dashed; ";
-        conteudo += "border-color: #0003; ";
-        conteudo += "height: 3rem; ";
-        conteudo += "display: flex; ";
-        conteudo += "text-align: center; ";
-        conteudo += "justify-content: center; ";
-        conteudo += "align-items: center; ";
-        conteudo += "align-content: center; ";
-        conteudo += "flex-direction: row; ";
-        conteudo += "font-size: 1rem; ";
-        conteudo += "color: #0007; ";
-        conteudo += "font-weight: bold;";
+    static montarCss() {
+        let conteudo = `
+        .sfDropDiv {
+            background-color: #0002;
+            border-style: dashed;
+            border-color: #0003;
+            height: 3rem;
+            display: flex;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            align-content: center;
+            flex-direction: column;
+            font-size: 1rem;
+            color: #0007;
+            font-weight: bold;
+            flex-wrap: nowrap;
+            padding: 15px;
+            margin: 8px 0;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;    
+        }
+
+        .sfSubTextDiv {
+            font-size: .8rem;
+            padding: 5px;
+            line-height: 1.1rem;
+            color: #0004;
+        }
+        `
         return conteudo;
     }
+
+    
+
 }
 
 class FileParser {
