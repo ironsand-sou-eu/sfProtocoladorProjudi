@@ -16,8 +16,7 @@
     "activeTab",
     "scripting",
     "declarativeContent",
-    "webRequest",
-    "webNavigation"
+    "webRequest"
   ],
 
   "host_permissions": ["https://projudi.tjba.jus.br/*", "*://projudi.tjba.jus.br/*"],
