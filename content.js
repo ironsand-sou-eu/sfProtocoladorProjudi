@@ -133,15 +133,29 @@ class FileParser {
     get parsedFiles() {
         for(let file of this.files) {
             const fileKey = this.getKeyByValue(this.files, file);
-            if(file.type.toLowerCase() !== "application/pdf") {
-                file.validFiletype = false;
-            } else {
+            file.validFiletype = this.extensionIsAllowed(file.type.toLowerCase());
+            if(file.validFiletype) {
                 file.nameWithoutDiacritics = this.stripDiacritics(file.name);
                 file.projudiType = this.getProjudiType(file.nameWithoutDiacritics, fileKey);
                 file.validFiletype = true;
             }
         }
         return this.files;
+    }
+
+    extensionIsAllowed(fileType) {
+        const regexPdf = /application\/pdf/i;
+        const regexMp3 = /audio\/(x-)*mpeg-3/i;
+        const regexMp4 = /video\/mp4/i;
+
+        if(fileType.search(regexPdf) == -1 &&
+            fileType.search(regexMp3) == -1 &&
+            fileType.search(regexMp4) == -1) {
+                return false;
+            } else {
+                return true;
+            }
+
     }
     
     /**
