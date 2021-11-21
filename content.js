@@ -171,7 +171,7 @@ class FileParser {
                 resposta = "Comprovante Residência";
             } else if(lowCaseName.includes("procuracao")) {
                 resposta = "Procuração";
-            } else if(lowCaseName.includes("substabelecimento") || lowCaseName.includes("subs")){
+            } else if(lowCaseName.includes("substab") || lowCaseName.search(/subs\b/gi) != -1){
                 resposta = "Substabelecimento";
             } else{
                 resposta = "Outros";
