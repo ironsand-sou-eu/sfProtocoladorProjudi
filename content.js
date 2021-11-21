@@ -30,8 +30,10 @@ class StaticGlobalStarter {
         let proproDiv = parentDoc.querySelector("[Propro]");
     
         if(parentForm && !proproDiv) {
-            const sfCss = document.createElement("style");
-            sfCss.innerHTML = this.montarCss();
+            const sfCss = document.createElement("link");
+            sfCss.rel = "stylesheet";
+            sfCss.type = "text/css";
+            sfCss.href = "ssf-styles.css";
             parentDoc.head.appendChild(sfCss);
 
             const DropDiv = document.createElement("div");
@@ -73,45 +75,6 @@ class StaticGlobalStarter {
             });
         }
     }
-
-    static montarCss() {
-        let conteudo = `
-        .sfDropDiv {
-            background-color: #0002;
-            border-style: dashed;
-            border-color: #0003;
-            height: 3rem;
-            display: flex;
-            text-align: center;
-            justify-content: center;
-            align-items: center;
-            align-content: center;
-            flex-direction: column;
-            font-size: 1rem;
-            color: #0007;
-            font-weight: bold;
-            flex-wrap: nowrap;
-            padding: 15px;
-            margin: 8px 0;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;    
-        }
-
-        .sfSubTextDiv {
-            font-size: .8rem;
-            padding: 5px;
-            line-height: 1.1rem;
-            color: #0004;
-        }
-        `
-        return conteudo;
-    }
-
-    
-
 }
 
 class FileParser {
@@ -151,11 +114,10 @@ class FileParser {
         if(fileType.search(regexPdf) == -1 &&
             fileType.search(regexMp3) == -1 &&
             fileType.search(regexMp4) == -1) {
-                return false;
-            } else {
-                return true;
-            }
-
+            return false;
+        } else {
+            return true;
+        }
     }
     
     /**
