@@ -8,7 +8,11 @@
   "author": "César Rodriguez",
 
   "action": {
-    "default_icon": "icon256.png",
+    "default_icon": {
+      "16": "sisico-16.png",
+      "32": "sisico-32.png",
+      "125": "sisico-128.png"
+    },
     "default_title": "Sísifo ProPro"
   },
 
