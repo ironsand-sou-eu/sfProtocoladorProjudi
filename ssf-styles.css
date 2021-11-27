@@ -28,3 +28,22 @@
     line-height: 1.1rem;
     color: #0004;
 }
+
+.sfPetLink {
+    display: inline-block;
+    margin: 10px 5px;
+    background-color: #aa1c1c17;
+    padding: 5px;
+    border: solid #AA1C1C 2px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: .8rem;
+    font-weight: 600;
+    color: #AA1C1C;
+    transition: 300ms ease-in-out;
+}
+
+.sfPetLink:hover {
+    background-color: #AA1C1C;
+    color: white;
+}

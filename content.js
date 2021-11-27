@@ -7,73 +7,116 @@ class StaticGlobalStarter {
     }
 
     static waitForContainers() {
-        let j = 0;
-        let parentForm = null;
+        let params = {
+            j: 0,
+            peticionarParentForm: null,
+            capaProcessoArquivosDiv: null,
+            parentDoc: null
+        };
         
-        var parentFormWait = setInterval((parentForm, j) => {
-            parentForm = document.querySelector("[name=mainFrame]")
+        var elementWait = setInterval((params) => {
+            params.peticionarParentForm = document.querySelector("[name=mainFrame]")
                 ?.contentDocument.querySelector("#userMainFrame")
                 ?.contentDocument.querySelector("#formUpload");
-            j++;
-            if (parentForm) {
-                clearInterval(parentFormWait);
-                const parentDoc = document.querySelector("[name=mainFrame]")
+            params.capaProcessoArquivosDiv = document.querySelector("[name=mainFrame]")
+                ?.contentDocument.querySelector("#userMainFrame")
+                ?.contentDocument.querySelector("#Arquivos");
+            params.j++;
+            
+            
+            if (params.peticionarParentForm || params.capaProcessoArquivosDiv) {
+                clearInterval(elementWait);
+                params.parentDoc = document.querySelector("[name=mainFrame]")
                     .contentDocument.querySelector("#userMainFrame").contentDocument;
-                StaticGlobalStarter.injectDragndropDiv(parentForm, parentDoc);
-            } else if(j > 50) { // 50 iterations = 10 seconds
-                clearInterval(parentFormWait);
-            };
-        }, 200, parentForm, j);
+            }
+            if (params.peticionarParentForm) StaticGlobalStarter.prepareInject(params.peticionarParentForm, params.parentDoc, "dragDropDiv");
+            if (params.capaProcessoArquivosDiv) StaticGlobalStarter.prepareInject(params.capaProcessoArquivosDiv, params.parentDoc, "peticionarButton");
+            if(params.j > 50) clearInterval(elementWait); // 50 iterations = 10 seconds
+
+        }, 200, params);
     }
 
-    static injectDragndropDiv(parentForm, parentDoc) {
-        let proproDiv = parentDoc.querySelector("[Propro]");
-    
-        if(parentForm && !proproDiv) {
-            const sfCss = document.createElement("link");
-            sfCss.rel = "stylesheet";
-            sfCss.type = "text/css";
-            sfCss.href = "ssf-styles.css";
-            parentDoc.head.appendChild(sfCss);
-
-            const DropDiv = document.createElement("div");
-            DropDiv.toggleAttribute("Propro");
-            DropDiv.setAttribute("class", "sfDropDiv");
-            parentForm.parentNode.insertBefore(DropDiv, parentForm);
-            
-            const mainText = document.createElement("div");
-            mainText.innerText = "Arraste os arquivos para cá";
-            DropDiv.appendChild(mainText);
-            
-            const textSubDiv = document.createElement("div");
-            textSubDiv.setAttribute("class", "sfSubTextDiv");
-            textSubDiv.innerHTML = "Evitemos excesso de anexos: o essencial pode passar despercebido<br />" +
-            "Sejamos éticos e responsáveis: falar a verdade é o primeiro passo para uma sociedade sadia";
-            DropDiv.appendChild(textSubDiv);
-    
-            DropDiv.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                DropDiv.style.backgroundColor = "#09447280";
-            });
-              
-            DropDiv.addEventListener('dragleave', () => {
-                DropDiv.style.backgroundColor = "#0002";
-            });
-              
-            DropDiv.addEventListener('drop', (e) => {
-                e.preventDefault();
-                DropDiv.style.backgroundColor = "#0002";
-                const draggedFiles = e.dataTransfer.files;
-                const fParser = new FileParser(draggedFiles);
-                const finalFiles = fParser.parsedFiles;
-                if(finalFiles.length > 0) {
-                    const fInjector = new FileInjector(finalFiles, parentForm);
-                    fInjector.injectFilesToProjudi();
-                } else {
-                    alert("Nenhum arquivo válido selecionado.");
-                }
-            });
+    static prepareInject(parentElement, parentDoc, injectType) {
+        let proproElement = parentDoc.querySelector("[Propro]");
+        if(!parentElement || proproElement) return;
+        
+        const sfCss = document.createElement("link");
+        sfCss.rel = "stylesheet";
+        sfCss.type = "text/css";
+        sfCss.href = "ssf-styles.css";
+        parentDoc.head.appendChild(sfCss);
+        
+        switch (injectType) {
+            case "dragDropDiv":
+                this.injectDragndropDiv(parentElement);
+                break;
+            case "peticionarButton":
+                this.injectPeticionarButton(parentElement);
+                break;
         }
+    }
+                
+    static injectPeticionarButton(arquivosDiv) {
+        const partesDiv = arquivosDiv.parentElement.querySelector("#Partes");
+        const idProc = this.getIdProc(partesDiv);
+        console.log(partesDiv, idProc);
+        if(!idProc) return;
+
+        const petLink = document.createElement("a");
+        petLink.toggleAttribute("Propro");
+        petLink.setAttribute("class", "sfPetLink");
+        petLink.href = "/projudi/movimentacao/Peticionar?numeroProcesso=" + idProc + "&ehPeticionar=s";
+        petLink.innerText = "Peticionar";
+        const parentP = partesDiv.parentElement.querySelector("div#Partes~p");
+        parentP.appendChild(petLink);
+    }
+
+    static getIdProc(partesDiv) {
+        const uriQuerystringNumProcIdentifier = "numeroProcesso=";
+        const procLink = partesDiv.getElementsByTagName("a")[0];
+        const linkUri = procLink.href;
+        const idProcPosition = linkUri.search(uriQuerystringNumProcIdentifier) + uriQuerystringNumProcIdentifier.length;
+        return linkUri.substr(idProcPosition);
+    }
+
+    static injectDragndropDiv(parentForm) {
+        const DropDiv = document.createElement("div");
+        DropDiv.toggleAttribute("Propro");
+        DropDiv.setAttribute("class", "sfDropDiv");
+        parentForm.parentNode.insertBefore(DropDiv, parentForm);
+        
+        const mainText = document.createElement("div");
+        mainText.innerText = "Arraste os arquivos para cá";
+        DropDiv.appendChild(mainText);
+        
+        const textSubDiv = document.createElement("div");
+        textSubDiv.setAttribute("class", "sfSubTextDiv");
+        textSubDiv.innerHTML = "Evitemos excesso de anexos: o essencial pode passar despercebido<br />" +
+        "Sejamos éticos e responsáveis: falar a verdade é o primeiro passo para uma sociedade sadia";
+        DropDiv.appendChild(textSubDiv);
+
+        DropDiv.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            DropDiv.style.backgroundColor = "#09447280";
+        });
+            
+        DropDiv.addEventListener('dragleave', () => {
+            DropDiv.style.backgroundColor = "#0002";
+        });
+            
+        DropDiv.addEventListener('drop', (e) => {
+            e.preventDefault();
+            DropDiv.style.backgroundColor = "#0002";
+            const draggedFiles = e.dataTransfer.files;
+            const fParser = new FileParser(draggedFiles);
+            const finalFiles = fParser.parsedFiles;
+            if(finalFiles.length > 0) {
+                const fInjector = new FileInjector(finalFiles, parentForm);
+                fInjector.injectFilesToProjudi();
+            } else {
+                alert("Nenhum arquivo válido selecionado.");
+            }
+        });
     }
 }
 

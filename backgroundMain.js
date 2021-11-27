@@ -7,7 +7,10 @@ chrome.action.onClicked.addListener(tab => {
 // Listener para navegação
 chrome.webRequest.onCompleted.addListener(
   sendMessage,
-  {urls: ["*://projudi.tjba.jus.br/projudi/movimentacao/Peticionar*"]}
+  {urls: [
+    "*://projudi.tjba.jus.br/projudi/movimentacao/Peticionar*",
+    "*://projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso=*"
+  ]}
 );
 
 function sendMessage(details) {
