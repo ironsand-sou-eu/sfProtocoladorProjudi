@@ -134,22 +134,23 @@ class FileParser {
      * @example
      *  - const foo = new FileParser(e.dataTransfer.files);
      *  - const parsedFoo = foo.parsedFiles();
-     *  - console.log(parsedFoo[0].nameWithoutDiacritics);
+     *  - console.log(parsedFoo[0].displayName);
      */
     get parsedFiles() {
         for(let file of this.files) {
             const fileKey = this.getKeyByValue(this.files, file);
-            file.validFiletype = this.extensionIsAllowed(file.type.toLowerCase());
+            file.validFiletype = this.allowedFileType(file.type.toLowerCase());
             if(file.validFiletype) {
-                file.nameWithoutDiacritics = this.stripDiacritics(file.name);
-                file.projudiType = this.getProjudiType(file.nameWithoutDiacritics, fileKey);
+                file.displayName = this.stripDiacritics(file.name);
+                file.displayName = this.stripFileExtension(file.displayName);
+                file.projudiType = this.getProjudiType(file.displayName, fileKey);
                 file.validFiletype = true;
             }
         }
         return this.files;
     }
 
-    extensionIsAllowed(fileType) {
+    allowedFileType(fileType) {
         const regexPdf = /application\/pdf/i;
         const regexMp3 = /audio\/(x-)*mpeg-3/i;
         const regexMp4 = /video\/mp4/i;
@@ -164,7 +165,7 @@ class FileParser {
     }
     
     /**
-     * @param nameWithoutDiacritics {string} String contendo o nome do arquivo, sem acentuação.
+     * @param displayName {string} String contendo o nome do arquivo, sem acentuação.
      * @param objKey {any} Chave que identifica o arquivo no objeto this.files.
      * @return {string} String contendo um dos tipos de arquivo selecionáveis no Projudi TJ/BA.
      * @example
@@ -173,8 +174,8 @@ class FileParser {
      *  - const type = getProjudiType;
      *  - console.log(type);
      */
-    getProjudiType(nameWithoutDiacritics, objKey){
-        const lowCaseName = nameWithoutDiacritics.toLowerCase();
+    getProjudiType(displayName, objKey){
+        const lowCaseName = displayName.toLowerCase();
         let resposta = "";
         if(objKey == 0) { // Primeiro arquivo
             if(lowCaseName.includes("peticao inicial") || lowCaseName.includes("inicial")){
@@ -221,6 +222,10 @@ class FileParser {
      */
     stripDiacritics(str){
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+    }
+
+    stripFileExtension(str) {
+        return str.replace(/((.pdf)|(.mp3)|(.mp4))$/i, "");
     }
 }
 
@@ -273,7 +278,7 @@ class FileInjector {
                     const txtDescriptQSelector = qSelector.replace("codD", "d");
                     console.log(txtDescriptQSelector)
                     const txtDescription = myForm.querySelector(txtDescriptQSelector);
-                    txtDescription.value = myFile.nameWithoutDiacritics;
+                    txtDescription.value = myFile.displayName;
                 }
                 clearInterval(selectWait);
             } else if(j > 30) {
