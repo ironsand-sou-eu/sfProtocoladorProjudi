@@ -1,0 +1,20 @@
+
+===================== Versão 1.0.2 ====================
+1.0.101 - FEATURE - Inserção do botão PETICIONAR  na ca-
+    pa dos processos.
+1.0.102 - FEATURE - Ao ignorar um arquivo não permitido,
+    o Sísifo avisa na própria caixa de arraste dos ar-
+    quivos.
+1.0.103 - ISSUE - Removida a extensão dos arquivos (.pdf,
+    .mp3 ou .mp4) do nome para exibição na caixa de des-
+    crição do arquivo que aparece quando selecionamos o
+    tipo "Outros".
+
+
+===================== Versão 1.0.1 =====================
+1.0.001 - ISSUE - Ajuste no filtro de arquivos cujo nome
+    contém a expressão "subs".
+1.0.002 - ISSUE - Tipos de arquivos permitidos ajustados
+    para também permitir .mp3 e .mp4.
+1.0.003 - ISSUE - Substituição de CSS hard-coded para ar-
+    quivo separado.
