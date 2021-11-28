@@ -1,45 +1,148 @@
 .sfDropDiv {
-    background-color: #0002;
-    border-style: dashed;
-    border-color: #0003;
-    height: 3rem;
     display: flex;
-    text-align: center;
-    justify-content: center;
+    flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     align-content: center;
-    flex-direction: column;
-    font-size: 1rem;
+    justify-content: center;
+    background-color: #0002;
+    border: dashed #0003;
     color: #0007;
+    font-size: 1rem;
     font-weight: bold;
-    flex-wrap: nowrap;
-    padding: 15px;
+    height: 3rem;
     margin: 8px 0;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
+    padding: 15px;
+    text-align: center;
+    user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+.sfDropDivErro {
+    overflow: hidden;
+    position: relative;
+    border: 1px dotted;
+    background-color: #f002;
+    border: none;
+    color: #f00;
+    padding-top: 20px;
+}
+
+.sfDropDivErro div:nth-child(2) {
+    color: #f00;
+    user-select: all;
+    -moz-user-select: all;
+    -ms-user-select: all;
+    -webkit-touch-callout: all;
+    -webkit-user-select: all;
+}
+
+.sfDropDivErro .movingBorder {
+    display: block;
+    position: absolute;
+}
+
+
+.sfDropDivErro .movingBorder:nth-child(3) {
+    height: 5px;
+    width:100%;
+    top:0px;
+    left:-100%;
+    background: linear-gradient(to right, rgba(0,0,0,0), #f00);
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    animation: span1 3s linear infinite;
+    animation-delay: 0;
+}
+
+@keyframes span1{
+    0%{
+        left:-100%;
+    }
+    100%{
+        left:100%;
+    }
+}
+.sfDropDivErro .movingBorder:nth-child(4) {
+    height: 100%;
+    width: 5px;
+    top:-100%;
+    right:0px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0), #f00);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    animation: span2 3s linear infinite;
+    animation-delay: 1.5s;
+}
+@keyframes span2{
+    0%{
+        top:-100%;
+    }
+    100%{
+        top:100%;
+    }
+}
+.sfDropDivErro .movingBorder:nth-child(5) {
+    height:5px;
+    width:100%;
+    right:-100%;
+    bottom: 0px;
+    background: linear-gradient(to left, rgba(0,0,0,0), #f00);
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    animation: span3 3s linear infinite;
+    animation-delay: 0s;
+}
+@keyframes span3{
+    0%{
+        right:-100%;
+    }
+    100%{
+        right: 100%;
+    }
+}
+
+.sfDropDivErro .movingBorder:nth-child(6) {
+    height:100%;
+    width:5px;
+    bottom:-100%;
+    left:0px;
+    background: linear-gradient(to top, rgba(0,0,0,0), #f00);
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+    animation: span4 3s linear infinite;
+    animation-delay: 1.5s;
+}
+@keyframes span4{
+    0%{
+        bottom: -100%;
+    }
+    100%{
+        bottom:100%;
+    }
 }
 
 .sfSubTextDiv {
-    font-size: .8rem;
-    padding: 5px;
-    line-height: 1.1rem;
     color: #0004;
+    font-size: .8rem;
+    line-height: 1.1rem;
+    padding: 5px;
 }
 
 .sfPetLink {
     display: inline-block;
-    margin: 10px 5px;
-    background-color: #aa1c1c17;
-    padding: 5px;
     border: solid #AA1C1C 2px;
     border-radius: 5px;
-    text-decoration: none;
+    background-color: #aa1c1c17;
+    color: #AA1C1C;
     font-size: .8rem;
     font-weight: 600;
-    color: #AA1C1C;
+    margin: 10px 5px;
+    padding: 5px;
+    text-decoration: none;
     transition: 300ms ease-in-out;
 }
 

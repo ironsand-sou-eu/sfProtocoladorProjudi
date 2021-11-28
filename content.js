@@ -80,39 +80,45 @@ class StaticGlobalStarter {
     }
 
     static injectDragndropDiv(parentForm) {
-        const DropDiv = document.createElement("div");
-        DropDiv.toggleAttribute("Propro");
-        DropDiv.setAttribute("class", "sfDropDiv");
-        parentForm.parentNode.insertBefore(DropDiv, parentForm);
+        const dropDiv = document.createElement("div");
+        dropDiv.toggleAttribute("Propro");
+        dropDiv.classList.add("sfDropDiv");
+        parentForm.parentNode.insertBefore(dropDiv, parentForm);
         
         const mainText = document.createElement("div");
         mainText.innerText = "Arraste os arquivos para cá";
-        DropDiv.appendChild(mainText);
+        dropDiv.appendChild(mainText);
         
         const textSubDiv = document.createElement("div");
-        textSubDiv.setAttribute("class", "sfSubTextDiv");
+        textSubDiv.classList.add("sfSubTextDiv");
         textSubDiv.innerHTML = "Evitemos excesso de anexos: o essencial pode passar despercebido<br />" +
         "Sejamos éticos e responsáveis: falar a verdade é o primeiro passo para uma sociedade sadia";
-        DropDiv.appendChild(textSubDiv);
+        dropDiv.appendChild(textSubDiv);
 
-        DropDiv.addEventListener('dragover', (e) => {
+        const blankSpan = document.createElement("span");
+        blankSpan.classList.add("movingBorder");
+        for(let i = 1; i <= 4; i++){
+            dropDiv.appendChild(blankSpan.cloneNode());
+        }
+
+        dropDiv.addEventListener('dragover', (e) => {
             e.preventDefault();
-            DropDiv.style.backgroundColor = "#09447280";
+            dropDiv.style.backgroundColor = "#09447280";
         });
             
-        DropDiv.addEventListener('dragleave', () => {
-            DropDiv.style.backgroundColor = "#0002";
+        dropDiv.addEventListener('dragleave', () => {
+            dropDiv.removeAttribute("style");
         });
-            
-        DropDiv.addEventListener('drop', (e) => {
+        
+        dropDiv.addEventListener('drop', (e) => {
             e.preventDefault();
-            DropDiv.style.backgroundColor = "#0002";
+            dropDiv.removeAttribute("style");
             const draggedFiles = e.dataTransfer.files;
             const fParser = new FileParser(draggedFiles);
             const finalFiles = fParser.parsedFiles;
             if(finalFiles.length > 0) {
                 const fInjector = new FileInjector(finalFiles, parentForm);
-                fInjector.injectFilesToProjudi();
+                fInjector.injectFilesToProjudi(dropDiv);
             } else {
                 alert("Nenhum arquivo válido selecionado.");
             }
@@ -236,14 +242,28 @@ class FileInjector {
         this.fileListWrapperDiv = this.form.querySelector("#arquivoUpload_wrap_list");
     }
 
-    injectFilesToProjudi() {
+    injectFilesToProjudi(dropDiv) {
         let i = 0;
+        let rejectedFiles = [];
         for(let iFile of this.files) {
-            if(!iFile.validFiletype) continue;
+            if(!iFile.validFiletype) {
+                rejectedFiles.push(iFile.name);
+                continue;
+            }
             const fileInput = this.getInput(i);
             this.setFileToInput(iFile, fileInput);
             this.handleDescriptionBox(i, iFile);
             i++;
+        }
+        if(rejectedFiles.length !== 0){
+            dropDiv.classList.add("sfDropDivErro");
+            dropDiv.getElementsByTagName("div")[0].innerText = "Os seguintes arquivos não foram inseridos:"
+            const fileListDiv = dropDiv.getElementsByTagName("div")[1];
+            fileListDiv.innerText = "";
+            rejectedFiles.forEach(fileName => {
+                fileListDiv.innerHTML += (fileListDiv.innerText) ? "<br />" : "";
+                fileListDiv.innerHTML += fileName;
+            });
         }
     }
 
