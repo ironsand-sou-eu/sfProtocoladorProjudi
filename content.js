@@ -59,7 +59,6 @@ class StaticGlobalStarter {
     static injectPeticionarButton(arquivosDiv) {
         const partesDiv = arquivosDiv.parentElement.querySelector("#Partes");
         const idProc = this.getIdProc(partesDiv);
-        console.log(partesDiv, idProc);
         if(!idProc) return;
 
         const petLink = document.createElement("a");
@@ -296,7 +295,6 @@ class FileInjector {
                 this.changeOption(descriptionBox, myFile.projudiType)
                 if(myFile.projudiType == "Outros") {
                     const txtDescriptQSelector = qSelector.replace("codD", "d");
-                    console.log(txtDescriptQSelector)
                     const txtDescription = myForm.querySelector(txtDescriptQSelector);
                     txtDescription.value = myFile.displayName;
                 }
