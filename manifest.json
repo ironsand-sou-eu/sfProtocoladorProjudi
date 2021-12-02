@@ -9,12 +9,19 @@
 
   "action": {
     "default_icon": {
-      "16": "sisifo-ico-16.png",
-      "32": "sisifo-ico-32.png",
-      "192": "sisifo-ico-192.png",
-      "256": "sisifo-ico-256.png"
+      "16": "icons/sisifo-ico-16.png",
+      "32": "icons/sisifo-ico-32.png",
+      "192": "icons/sisifo-ico-192.png",
+      "256": "icons/sisifo-ico-256.png"
     },
     "default_title": "Sísifo ProPro"
+  },
+  
+  "icons": {
+    "16": "icons/sisifo-ico-16.png",
+    "32": "icons/sisifo-ico-32.png",
+    "192": "icons/sisifo-ico-192.png",
+    "256": "icons/sisifo-ico-256.png"
   },
 
   "permissions": [
