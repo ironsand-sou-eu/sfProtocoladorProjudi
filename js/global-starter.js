@@ -1,13 +1,43 @@
 class GlobalStarter {
+    // static {
+    //     chrome.runtime.onMessage.addListener( (msg, sender, sendResponse) => {
+    //         if (msg.startInjection) GlobalStarter.waitForContainers()
+    //         sendResponse("Dummy response to avoid console error logging")
+    //     })
+    // }
+
     static {
-        chrome.runtime.onMessage.addListener( (msg, sender, sendResponse) => {
-            if (msg.startInjection) GlobalStarter.waitForContainers()
-            sendResponse("Dummy response to avoid console error logging")
-        })
+        const url = document.URL
+        const urlType = this.getUrlType(url)
+        switch (urlType) {
+            case "uploadPage":
+                const formElement = document.querySelector("#formUpload")
+                this.prepareInject(formElement, document, "dragDropDiv")
+                break;        
+            case "lawSuitHomePage":
+                let arquivosDiv = document.querySelector("#Arquivos")
+                this.prepareInject(arquivosDiv, document, "peticionarButton")        
+                break;
+        }
+    }
+    
+    static getUrlType(url) {
+        const uploadUrl = "projudi.tjba.jus.br/projudi/movimentacao/Peticionar?numeroProcesso="
+        const lawsuitHomeUrl = "projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso="
+        const lawsuitHomeAfterUpload = "projudi.tjba.jus.br/projudi/movimentacao/Peticionar"
+        if (url.indexOf(uploadUrl) != -1) {
+            return "uploadPage"
+        } else if (url.indexOf(lawsuitHomeUrl) != -1) {
+            return "lawSuitHomePage"
+        } else if (url.indexOf(lawsuitHomeAfterUpload) != -1) {
+            return "lawSuitHomePage"
+        } else {
+            return null
+        }        
     }
 
     static waitForContainers() {
-        console.log("oi")
+        console.log(document.URL)
         let params = {
             j: 0,
             peticionarParentForm: null,
@@ -41,11 +71,11 @@ class GlobalStarter {
         let proproElement = parentDoc.querySelector("[Propro]")
         if(!parentElement || proproElement) return
         
-        const sfCss = document.createElement("link")
-        sfCss.rel = "stylesheet"
-        sfCss.type = "text/css"
-        sfCss.href = "ssf-styles.css"
-        parentDoc.head.appendChild(sfCss)
+        // const sfCss = document.createElement("link")
+        // sfCss.rel = "stylesheet"
+        // sfCss.type = "text/css"
+        // sfCss.href = "./ssf-styles.css"
+        // parentDoc.head.appendChild(sfCss)
         
         switch (injectType) {
             case "dragDropDiv":

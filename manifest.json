@@ -37,6 +37,7 @@
     {
       "matches": ["https://projudi.tjba.jus.br/*"],
       "all_frames": true,
+      "run_at": "document_end",
       "js": [
         "js/global-starter.js",
         "js/file-injector.js",
