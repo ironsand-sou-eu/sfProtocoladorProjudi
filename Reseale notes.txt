@@ -1,3 +1,25 @@
+===================== Versão 1.0.4 ====================
+1.0.301 - FEATURE - Caixa para arraste de arquivos e bo-
+    tão "Peticionar" agora aparecem automaticamente, sem
+    necessidade de clicar no botão para ativar.
+1.0.302 - ISSUE - A caixa para arraste de arquivo conti-
+    nua funcionando mesmo depois de uma primeira inser-
+    ção (antes, após inseridos quaisquer arquivos, a cai-
+    continuava presente, mas não funcionava para novas
+    inserções).
+1.0.303 - ISSUE - Caixa para arraste de arquivos e bo-
+    tão "Peticionar" agora funcionam abrindo as respec-
+    tivas URLs diretamente, mesmo sem ser nas iFrames
+    típicas do sistema (por exemplo, control-clicando
+    os links de processo ou peticionamento). Antes, em
+    caso de abertura direta, a caixa e o botão não apa-
+    reciam, nem mesmo clicando no botão da extensão.
+
+
+===================== Versão 1.0.3 ====================
+1.0.201 - FEATURE - Adoção de um ícone melhor e proprie-
+tário.
+
 
 ===================== Versão 1.0.2 ====================
 1.0.101 - FEATURE - Inserção do botão PETICIONAR  na ca-
