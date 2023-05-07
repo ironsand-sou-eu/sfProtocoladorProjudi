@@ -10,10 +10,11 @@ class GlobalStarter {
         const url = document.URL
         const urlType = this.getUrlType(url)
         switch (urlType) {
+            case "fileLawsuitUrl":
             case "uploadPage":
                 const formElement = document.querySelector("#formUpload")
                 this.prepareInject(formElement, document, "dragDropDiv")
-                break;        
+                break;
             case "lawSuitHomePage":
                 let arquivosDiv = document.querySelector("#Arquivos")
                 this.prepareInject(arquivosDiv, document, "peticionarButton")        
@@ -22,15 +23,21 @@ class GlobalStarter {
     }
     
     static getUrlType(url) {
-        const uploadUrl = "projudi.tjba.jus.br/projudi/movimentacao/Peticionar?numeroProcesso="
-        const lawsuitHomeUrl = "projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso="
-        const lawsuitHomeAfterUpload = "projudi.tjba.jus.br/projudi/movimentacao/Peticionar"
-        if (url.indexOf(uploadUrl) != -1) {
+        const urls = {
+            uploadUrl: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar?numeroProcesso=",
+            lawsuitHomeUrl: "projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso=",
+            lawsuitHomeAfterUpload: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar",
+            fileLawsuitUrl: "projudi.tjba.jus.br/projudi/movimentacao/PeticaoInicial"
+        }
+
+        if (url.indexOf(urls.uploadUrl) != -1) {
             return "uploadPage"
-        } else if (url.indexOf(lawsuitHomeUrl) != -1) {
+        } else if (url.indexOf(urls.lawsuitHomeUrl) != -1) {
             return "lawSuitHomePage"
-        } else if (url.indexOf(lawsuitHomeAfterUpload) != -1) {
+        } else if (url.indexOf(urls.lawsuitHomeAfterUpload) != -1) {
             return "lawSuitHomePage"
+        } else if (url.indexOf(urls.fileLawsuitUrl) != -1) {
+            return "fileLawsuitUrl"
         } else {
             return null
         }        
@@ -91,13 +98,12 @@ class GlobalStarter {
         const partesDiv = arquivosDiv.parentElement.querySelector("#Partes")
         const idProc = this.getIdProc(partesDiv)
         if(!idProc) return
-
+        const parentP = partesDiv.parentElement.querySelector("div#Partes ~ div > p")
         const petLink = document.createElement("a")
         petLink.toggleAttribute("Propro")
         petLink.setAttribute("class", "sfPetLink")
         petLink.href = "/projudi/movimentacao/Peticionar?numeroProcesso=" + idProc + "&ehPeticionar=s"
         petLink.innerText = "Peticionar"
-        const parentP = partesDiv.parentElement.querySelector("div#Partes~p")
         parentP.appendChild(petLink)
     }
 

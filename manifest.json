@@ -4,7 +4,7 @@
   "name": "Sísifo ProPro",
   "description": "Esta extensão facilita o protocolo de petições no Projudi TJ/BA",
   "author": "César Rodriguez",
-  "version": "1.0.4",
+  "version": "1.1.0",
 
   "action": {
     "default_icon": {

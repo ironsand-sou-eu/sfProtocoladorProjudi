@@ -1,3 +1,12 @@
+===================== Versão 1.1.0 ====================
+1.0.401 - FEATURE - A caixa para arraste de arquivos a-
+    gora aparece também nas telas de ajuizar ação nova,
+    tanto em primeiro quanto em segundo graus.
+1.0.402 - ISSUE - O botão "Peticionar" voltou a aparecer
+    (havia desaparecido como resultado de uma mudança no
+    site do Projudi).
+
+
 ===================== Versão 1.0.4 ====================
 1.0.301 - FEATURE - Caixa para arraste de arquivos e bo-
     tão "Peticionar" agora aparecem automaticamente, sem
