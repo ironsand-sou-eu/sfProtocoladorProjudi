@@ -25,10 +25,6 @@
 
   "host_permissions": ["*://projudi.tjba.jus.br/*"],
 
-  "background": {
-    "service_worker": "js/background-main.js"
-  },
-
   "content_scripts": [
     {
       "matches": ["https://projudi.tjba.jus.br/*"],
