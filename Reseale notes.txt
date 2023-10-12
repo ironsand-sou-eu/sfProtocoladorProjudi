@@ -1,3 +1,9 @@
+===================== Versão 1.1.1 ====================
+1.1.001 - FEATURE - A caixa para arraste de arquivos a-
+    gora aparece também nas telas de peticionamento
+    decorrentes de clicar no link de cumprir intimação.
+
+
 ===================== Versão 1.1.0 ====================
 1.0.401 - FEATURE - A caixa para arraste de arquivos a-
     gora aparece também nas telas de ajuizar ação nova,

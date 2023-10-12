@@ -8,43 +8,33 @@ class GlobalStarter {
 
     static {
         const url = document.URL
-        const urlType = this.getUrlType(url)
-        switch (urlType) {
-            case "fileLawsuitUrl":
-            case "uploadPage":
+        const action = this.getActionFromUrl(url)
+        switch (action) {
+            case "injectBox":
                 const formElement = document.querySelector("#formUpload")
                 this.prepareInject(formElement, document, "dragDropDiv")
                 break;
-            case "lawSuitHomePage":
+            case "injectButton":
                 let arquivosDiv = document.querySelector("#Arquivos")
                 this.prepareInject(arquivosDiv, document, "peticionarButton")        
                 break;
         }
     }
-    
-    static getUrlType(url) {
-        const urls = {
-            uploadUrl: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar?numeroProcesso=",
-            lawsuitHomeUrl: "projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso=",
-            lawsuitHomeAfterUpload: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar",
-            fileLawsuitUrl: "projudi.tjba.jus.br/projudi/movimentacao/PeticaoInicial"
-        }
 
-        if (url.indexOf(urls.uploadUrl) != -1) {
-            return "uploadPage"
-        } else if (url.indexOf(urls.lawsuitHomeUrl) != -1) {
-            return "lawSuitHomePage"
-        } else if (url.indexOf(urls.lawsuitHomeAfterUpload) != -1) {
-            return "lawSuitHomePage"
-        } else if (url.indexOf(urls.fileLawsuitUrl) != -1) {
-            return "fileLawsuitUrl"
-        } else {
-            return null
-        }        
+    static getActionFromUrl(url) {
+        const urlsToActions = [
+            { action: "injectBox", urlFragment: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar?numeroProcesso=" },
+            { action: "injectBox", urlFragment: "projudi.tjba.jus.br/projudi/movimentacao/PeticaoInicial" },
+            { action: "injectBox", urlFragment: "projudi.tjba.jus.br/projudi/acoes/Cumprir" },
+            { action: "injectButton", urlFragment: "projudi.tjba.jus.br/projudi/listagens/DadosProcesso?numeroProcesso=" },
+            { action: "lawsuitHomeAfterUpload", urlFragment: "projudi.tjba.jus.br/projudi/movimentacao/Peticionar" }
+        ]
+        const foundEntries = urlsToActions.filter(urlAction => url.includes(urlAction.urlFragment))
+        if (!foundEntries.length) return null
+        return foundEntries[0].action
     }
 
     static waitForContainers() {
-        console.log(document.URL)
         let params = {
             j: 0,
             peticionarParentForm: null,
